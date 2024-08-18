@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Technologies Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container quiz-container mt-5">
+        <h1 class="text-center mb-4">Web Technologies Quiz</h1>
+        <div id="quiz">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+        <button id="submit" class="btn btn-primary mt-3">Submit</button>
+        <div id="results" class="mt-4"></div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "Which HTML5 element is used to play video files?",
+                options: ["<media>", "<video>", "<play>", "<film>"],
+                correct: 1
+            },
+            {
+                question: "Which CSS3 property is used for creating rounded corners?",
+                options: ["border-radius", "corner-radius", "rounded-corners", "box-radius"],
+                correct: 0
+            },
+            {
+                question: "Which Bootstrap class is used to create a responsive grid system?",
+                options: [".grid", ".flex", ".container", ".responsive"],
+                correct: 2
+            },
+            {
+                question: "What keyword is used to declare a variable in JavaScript?",
+                options: ["var", "let", "const", "All of the above"],
+                correct: 3
+            }
+        ];
+
+        const quizContainer = document.getElementById('quiz');
+        const resultsContainer = document.getElementById('results');
+        const submitButton = document.getElementById('submit');
+
+        function buildQuiz() {
+            const output = [];
+
+            quizData.forEach((questionData, questionIndex) => {
+                const answers = [];
+
+                for (let i = 0; i < questionData.options.length; i++) {
+                    answers.push(
+                        `<div class="form-check">
+                            <input class="form-check-input" type="radio" name="question${questionIndex}" id="question${questionIndex}answer${i}" value="${i}">
+                            <label class="form-check-label" for="question${questionIndex}answer${i}">
+                                ${questionData.options[i]}
+                            </label>
+                        </div>`
+                    );
+                }
+
+                output.push(
+                    `<div class="question mb-4">
+                        <h5>${questionData.question}</h5>
+                        <div class="answers">${answers.join('')}</div>
+                    </div>`
+                );
+            });
+
+            quizContainer.innerHTML = output.join('');
+        }
+
+        function showResults() {
+            const answerContainers = quizContainer.querySelectorAll('.answers');
+            let numCorrect = 0;
+
+            quizData.forEach((questionData, questionIndex) => {
+                const answerContainer = answerContainers[questionIndex];
+                const selector = `input[name=question${questionIndex}]:checked`;
+                const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+                if (userAnswer == questionData.correct) {
+                    numCorrect++;
+                    answerContainers[questionIndex].style.color = 'green';
+                } else {
+                    answerContainers[questionIndex].style.color = 'red';
+                }
+            });
+
+            resultsContainer.innerHTML = `You got ${numCorrect} out of ${quizData.length} correct.`;
+        }
+
+        buildQuiz();
+
+        submitButton.addEventListener('click', showResults);
+    </script>
+</body>
+</html>
